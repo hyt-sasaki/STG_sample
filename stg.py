@@ -201,3 +201,63 @@ class Player(Airflame):
     def __nextAction(self, command):
         self.__v = command.v
         self.__isShot = command.isShot
+
+
+##
+# @brief Enemyクラス
+#
+# 敵機を表すクラスで,Airflameクラスを継承している.
+class Enemy(Airflame):
+    # @param pos 自機の初期位置
+    # @param pprop 自機の属性(静的なもの)
+    # @param drawGroup spriteの描画を管理するGroupオブジェクト
+    # @param bulletGroup 弾丸をまとめて管理するためのGroupオブジェクト
+
+    ##
+    # @brief Enemyクラスのコンストラクタ
+    #
+    # @param pos 敵機の初期位置
+    # @param bprop 敵機の属性(静的なもの)
+    # @param drawGroup spriteの描画を管理するGroupオブジェクト
+    # @param bulletGroup 弾丸をまとめて管理するためのGroupオブジェクト
+    # @param enemyGroup 敵機をまとめて管理するためのGroupオブジェクト
+    def __init__(self, pos, bprop, drawGroup, bulletGroup, enemyGroup):
+        Airflame.__init__(self, pos, bprop, drawGroup, bulletGroup)
+        super(Airflame, self).add(enemyGroup)
+        rx = random.randrange(-3, 3)
+        ry = random.randrange(-3, 3)
+        self.__v = [rx, ry]
+
+    ##
+    # @brief 敵機状態の更新メソッド
+    #
+    # 現在の状態に基づいて次の行動を決定し，移動および弾丸の発射を行う.
+    def update(self):
+        self.__nextAction()
+        self.__move()
+        self.__shot()
+
+    ##
+    # @brief 現在の状態に基づいて次の行動を決定するメソッド
+    #
+    # 現在の状態に基づいて移動速度(移動方向)と弾丸を発射するかを決定する.
+    def __nextAction(self):
+        isOutOfRange = checkOutOfRange(self.rect)
+        if isOutOfRange[0]:
+            self.__v[0] *= -1
+        if isOutOfRange[1]:
+            self.__v[1] *= -1
+
+        r = random.random()
+        if r < self.prop.shotFreq:
+            self.__isShot = True
+
+    ##
+    # @brief 衝突したオブジェクト(Playerオブジェクト)に対してダメージを与えるメソッド
+    #
+    # @param player 自機
+    #
+    # 衝突したオブジェクトに対して直接ぶつかってダメージを与える.なお,衝突した後は敵機自身は消滅する.
+    def damage(self, player):
+        player.collided(self.__hp)
+        self.kill()
