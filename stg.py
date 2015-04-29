@@ -9,7 +9,7 @@ import pygame
 import pygame.display
 import pygame.sprite
 import random
-# import collections
+import collections
 
 
 ## ゲーム画面のサイズ
@@ -261,3 +261,43 @@ class Enemy(Airflame):
     def damage(self, player):
         player.collided(self.__hp)
         self.kill()
+
+
+##
+# @brief 自機への命令を処理するクラス
+#
+# キー入力を元に,自機への命令を決定する.
+class Command(object):
+    ## 移動量
+    __D = 2
+    ## キーと移動方向を対応付ける辞書
+    __commandList = {
+        pygame.K_UP: (0, -__D),
+        pygame.K_RIGHT: (__D, 0),
+        pygame.K_DOWN: (0, __D),
+        pygame.K_LEFT: (-__D, 0),
+    }
+    ## 弾丸を発射するキー
+    __SHOT_KEY = pygame.K_SPACE
+    ## 速度と弾丸を発射可能かを保持する命令オブジェクト
+    __command = collections.namedtuple('command', 'v isShot')
+
+    ##
+    # @brief キー入力を元に自機への命令を出力するメソッド
+    #
+    # @return 命令をまとめたオブジェクト(__commandオブジェクト)
+    def getCommand(self):
+        vx = 0
+        vy = 0
+        isShot = False
+        pressed_keys = pygame.key.get_pressed()
+        for key in Command.__commandList.keys():
+            if pressed_keys[key]:
+                mvCommand = Command.__commandList[key]
+                vx += mvCommand[0]
+                vy += mvCommand[1]
+        if pressed_keys[Command.__SHOT_KEY]:
+            isShot = True
+
+        com = Command.__command((vx, vy), isShot)
+        return com
