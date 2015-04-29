@@ -35,14 +35,14 @@ class MySprite(pygame.sprite.Sprite):
         # spriteの初期位置を設定
         self.rect.center = pos
         ## spriteの移動速度
-        self.v = [0, 0]
+        self.__v = [0, 0]
 
     ##
     # @brief 画面内を移動するメソッド
     #
-    # self.vに基づいて移動を行う.
+    # self.__vに基づいて移動を行う.
     def move(self):
-        self.rect.move_ip(self.v[0], self.v[1])
+        self.rect.move_ip(self.__v[0], self.__v[1])
 
 
 ##
@@ -63,12 +63,12 @@ class Bullet(MySprite):
         ## 弾丸の属性(攻撃力や画像などの静的なもの)
         self.prop = bprop
         ## 弾丸の速度
-        self.v = self.prop.v
+        self.__v = self.prop.v
 
     ##
     # @brief 状態の更新メソッド
     #
-    # self.vに基づいて移動を行い，弾丸の状態を更新する
+    # self.__vに基づいて移動を行い，弾丸の状態を更新する
     def update(self):
         self.move()
 
