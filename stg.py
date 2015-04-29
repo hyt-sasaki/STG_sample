@@ -8,8 +8,35 @@
 import pygame
 import pygame.display
 import pygame.sprite
-# import random
+import random
 # import collections
+
+
+## ゲーム画面のサイズ
+SIZE = (640, 480)
+
+
+##
+# @brief Rectが画面外に出ていないかを判定する関数
+#
+# @param rect 判定対象となるRectオブジェクト
+#
+# @return 0番目がx座標,1番目がy座標が範囲外かどうかをbool値で保持するtupple
+def checkOutOfRange(rect):
+    x = rect.x
+    y = rect.y
+    X = SIZE[0]
+    Y = SIZE[1]
+    width = rect.width
+    height = rect.height
+
+    isOutOfRange = [False, False]
+    if not (0 + width / 2 < x < X - width / 2):
+        isOutOfRange[0] = True
+    if not (0 + height / 2 < y < Y - height / 2):
+        isOutOfRange[1] = True
+
+    return tuple(isOutOfRange)
 
 
 ##
