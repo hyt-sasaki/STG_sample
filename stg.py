@@ -43,3 +43,41 @@ class MySprite(pygame.sprite.Sprite):
     # self.vに基づいて移動を行う.
     def move(self):
         self.rect.move_ip(self.v[0], self.v[1])
+
+
+##
+# @brief 弾丸クラス
+#
+# 弾丸クラスで,MySpriteクラスを継承している.
+class Bullet(MySprite):
+    ##
+    # @brief Bulletクラスのコンストラクタ
+    #
+    # @param pos 弾丸の初期位置
+    # @param bprop 弾丸の属性(攻撃力や画像など)
+    # @param drawGroup  spriteの描画を管理するgroupオブジェクト
+    # @param bulletGroup 弾丸をまとめて管理するためのgroupオブジェクト
+    def __init__(self, pos, bprop, drawGroup, bulletGroup):
+        MySprite.__init__(self, bprop.image, pos, drawGroup)
+        super(MySprite, self).add(bulletGroup)
+        ## 弾丸の属性(攻撃力や画像などの静的なもの)
+        self.prop = bprop
+        ## 弾丸の速度
+        self.v = self.prop.v
+
+    ##
+    # @brief 状態の更新メソッド
+    #
+    # self.vに基づいて移動を行い，弾丸の状態を更新する
+    def update(self):
+        self.move()
+
+    ##
+    # @brief 衝突したオブジェクトに対してダメージを与えるメソッド
+    #
+    # @param airflame ダメージを与える対象となるオブジェクト
+    #
+    # 衝突したオブジェクトに対してダメージを与える.なお,衝突した後は弾丸自身は消滅する.
+    def damage(self, airflame):
+        airflame.collided(self.prop.d)
+        self.kill()
