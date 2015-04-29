@@ -41,7 +41,7 @@ class MySprite(pygame.sprite.Sprite):
     # @brief 画面内を移動するメソッド
     #
     # self.__vに基づいて移動を行う.
-    def move(self):
+    def __move(self):
         self.rect.move_ip(self.__v[0], self.__v[1])
 
 
@@ -70,7 +70,7 @@ class Bullet(MySprite):
     #
     # self.__vに基づいて移動を行い，弾丸の状態を更新する
     def update(self):
-        self.move()
+        self.__move()
 
     ##
     # @brief 衝突したオブジェクトに対してダメージを与えるメソッド
@@ -112,7 +112,7 @@ class Airflame(MySprite):
     # @brief 弾丸を発射するメソッド
     #
     # self.__isShotおよびself.__reloadの値が条件を満たしている場合に，弾丸を発射する.
-    def shot(self):
+    def __shot(self):
         if self.__isShot:
             if self.__reload > self.prop.reloadLimit:
                 # 生成する弾丸の初期位置を設定
@@ -125,7 +125,7 @@ class Airflame(MySprite):
                 self.__reload = 0
 
         # リロード時間のカウント
-        self._reload += 1
+        self.__reload += 1
 
     ##
     # @brief 他のオブジェクトに衝突された場合の処理を行うメソッド
@@ -134,6 +134,6 @@ class Airflame(MySprite):
     #
     # 他のオブジェクトから衝突された場合に,ヒットポイントの更新を行う.ヒットポイントが0以下の場合には自身のオブジェクトは消滅する.
     def collided(self, damage):
-        self._hp -= damage
-        if self._hp <= 0:
+        self.__hp -= damage
+        if self.__hp <= 0:
             self.kill()
