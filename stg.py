@@ -81,3 +81,59 @@ class Bullet(MySprite):
     def damage(self, airflame):
         airflame.collided(self.prop.d)
         self.kill()
+
+
+##
+# @brief 機体を表すクラス
+#
+# 機体を表すクラスでMySpriteを継承している.
+class Airflame(MySprite):
+    ##
+    # @brief Airflameクラスのコンストラクタ
+    #
+    # @param pos 機体の初期値
+    # @param prop 機体の属性(静的なもの)
+    # @param drawGroup spriteの描画を管理するGroupオブジェクト
+    # @param bulletGroup 弾丸をまとめて管理するためのGroupオブジェクト
+    def __init__(self, pos, prop, drawGroup, bulletGroup):
+        MySprite.__init__(self, prop.image, pos, drawGroup)
+        ## 機体が生成するBulletオブジェクトの所属するグループ
+        self.bulletGroup = bulletGroup
+        ## 機体の属性(静的なもの)
+        self.prop = prop
+        ## 機体のヒットポイント
+        self.__hp = prop.hp
+        ## 機体が弾丸を撃ってからの経過時間
+        self.__reload = prop.reloadLimit
+        ## 機体が弾丸を撃とうとしているかどうかを表すbool値
+        self.__isShot = False
+
+    ##
+    # @brief 弾丸を発射するメソッド
+    #
+    # self.__isShotおよびself.__reloadの値が条件を満たしている場合に，弾丸を発射する.
+    def shot(self):
+        if self.__isShot:
+            if self.__reload > self.prop.reloadLimit:
+                # 生成する弾丸の初期位置を設定
+                bulletPos = self.rect.center
+                # 生成する弾丸のプロパティを設定
+                bulletProp = self.prop.bprop
+                # 弾丸の生成
+                Bullet(bulletPos, bulletProp, self.drawGroup, self.bulletGroup)
+                # リロード時間をリセット
+                self.__reload = 0
+
+        # リロード時間のカウント
+        self._reload += 1
+
+    ##
+    # @brief 他のオブジェクトに衝突された場合の処理を行うメソッド
+    #
+    # @param damage 相手のオブジェクトから与えられるダメージ
+    #
+    # 他のオブジェクトから衝突された場合に,ヒットポイントの更新を行う.ヒットポイントが0以下の場合には自身のオブジェクトは消滅する.
+    def collided(self, damage):
+        self._hp -= damage
+        if self._hp <= 0:
+            self.kill()
