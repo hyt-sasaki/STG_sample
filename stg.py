@@ -137,3 +137,40 @@ class Airflame(MySprite):
         self.__hp -= damage
         if self.__hp <= 0:
             self.kill()
+
+
+##
+# @brief Playerクラス
+#
+# 自機を表すクラスで,Airflameクラスを継承している.
+class Player(Airflame):
+    ##
+    # @brief Playerクラスのコンストラクタ
+    #
+    # @param pos 自機の初期位置
+    # @param pprop 自機の属性(静的なもの)
+    # @param drawGroup spriteの描画を管理するGroupオブジェクト
+    # @param bulletGroup 弾丸をまとめて管理するためのGroupオブジェクト
+    def __init__(self, pos, pprop, drawGroup, bulletGroup):
+        Airflame.__init__(self, pos, pprop, drawGroup, bulletGroup)
+
+    ##
+    # @brief 自機状態の更新メソッド
+    #
+    # @param command 自機の次の行動をまとめたオブジェクト
+    #
+    # commandの内容に基づいて次の行動を決定し，移動および弾丸の発射を行う.
+    def update(self, command):
+        self.__nextAction(command)
+        self.__move()
+        self.__shot()
+
+    ##
+    # @brief commandの内容に基づいて次の行動を決定するメソッド
+    #
+    # @param command 自機の次の行動をまとめたオブジェクト
+    #
+    # commandの内容に基づいて移動速度(移動方向)と弾丸を発射するかを決定する.
+    def __nextAction(self, command):
+        self.__v = command.v
+        self.__isShot = command.isShot
