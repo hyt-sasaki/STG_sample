@@ -23,8 +23,8 @@ SIZE = (640, 480)
 #
 # @return 0番目がx座標,1番目がy座標が範囲外かどうかをbool値で保持するtupple
 def checkOutOfRange(rect):
-    x = rect.x
-    y = rect.y
+    x = rect.center[0]
+    y = rect.center[1]
     X = SIZE[0]
     Y = SIZE[1]
     width = rect.width
