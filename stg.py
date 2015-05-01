@@ -62,14 +62,14 @@ class MySprite(pygame.sprite.Sprite):
         # spriteの初期位置を設定
         self.rect.center = pos
         ## spriteの移動速度
-        self.__v = [0, 0]
+        self._v = [0, 0]
 
     ##
     # @brief 画面内を移動するメソッド
     #
-    # self.__vに基づいて移動を行う.
-    def __move(self):
-        self.rect.move_ip(self.__v[0], self.__v[1])
+    # self._vに基づいて移動を行う.
+    def _move(self):
+        self.rect.move_ip(self._v[0], self._v[1])
 
 
 ##
@@ -90,14 +90,18 @@ class Bullet(MySprite):
         ## 弾丸の属性(攻撃力や画像などの静的なもの)
         self.prop = bprop
         ## 弾丸の速度
-        self.__v = self.prop.v
+        self._v = self.prop.v
 
     ##
     # @brief 状態の更新メソッド
     #
-    # self.__vに基づいて移動を行い，弾丸の状態を更新する
+    # self._vに基づいて移動を行い，弾丸の状態を更新する
     def update(self):
-        self.__move()
+        self._move()
+        isOutOfRangeTupple = checkOutOfRange(self.rect)
+        isOutOfRange = isOutOfRangeTupple[0] or isOutOfRangeTupple[1]
+        if isOutOfRange:
+            self.kill()
 
     ##
     # @brief 衝突したオブジェクトに対してダメージを与えるメソッド
@@ -129,19 +133,19 @@ class Airflame(MySprite):
         ## 機体の属性(静的なもの)
         self.prop = prop
         ## 機体のヒットポイント
-        self.__hp = prop.hp
+        self._hp = prop.hp
         ## 機体が弾丸を撃ってからの経過時間
-        self.__reload = prop.reloadLimit
+        self._reload = prop.reloadLimit
         ## 機体が弾丸を撃とうとしているかどうかを表すbool値
-        self.__isShot = False
+        self._isShot = False
 
     ##
     # @brief 弾丸を発射するメソッド
     #
-    # self.__isShotおよびself.__reloadの値が条件を満たしている場合に，弾丸を発射する.
-    def __shot(self):
-        if self.__isShot:
-            if self.__reload > self.prop.reloadLimit:
+    # self._isShotおよびself._reloadの値が条件を満たしている場合に，弾丸を発射する.
+    def _shot(self):
+        if self._isShot:
+            if self._reload > self.prop.reloadLimit:
                 # 生成する弾丸の初期位置を設定
                 bulletPos = self.rect.center
                 # 生成する弾丸のプロパティを設定
@@ -149,10 +153,10 @@ class Airflame(MySprite):
                 # 弾丸の生成
                 Bullet(bulletPos, bulletProp, self.drawGroup, self.bulletGroup)
                 # リロード時間をリセット
-                self.__reload = 0
+                self._reload = 0
 
         # リロード時間のカウント
-        self.__reload += 1
+        self._reload += 1
 
     ##
     # @brief 他のオブジェクトに衝突された場合の処理を行うメソッド
@@ -161,8 +165,8 @@ class Airflame(MySprite):
     #
     # 他のオブジェクトから衝突された場合に,ヒットポイントの更新を行う.ヒットポイントが0以下の場合には自身のオブジェクトは消滅する.
     def collided(self, damage):
-        self.__hp -= damage
-        if self.__hp <= 0:
+        self._hp -= damage
+        if self._hp <= 0:
             self.kill()
 
 
@@ -188,9 +192,9 @@ class Player(Airflame):
     #
     # commandの内容に基づいて次の行動を決定し，移動および弾丸の発射を行う.
     def update(self, command):
-        self.__nextAction(command)
-        self.__move()
-        self.__shot()
+        self._nextAction(command)
+        self._move()
+        self._shot()
 
     ##
     # @brief commandの内容に基づいて次の行動を決定するメソッド
@@ -198,9 +202,17 @@ class Player(Airflame):
     # @param command 自機の次の行動をまとめたオブジェクト
     #
     # commandの内容に基づいて移動速度(移動方向)と弾丸を発射するかを決定する.
-    def __nextAction(self, command):
-        self.__v = command.v
-        self.__isShot = command.isShot
+    def _nextAction(self, command):
+        self._v = command.v
+        self._isShot = command.isShot
+
+    # @brief 画面内を移動するメソッド
+    #
+    # 画面内を移動するメソッド，画面端ではループするようになっている
+    def _move(self):
+        super(Airflame, self)._move()
+        self.rect.x %= SIZE[0]
+        self.rect.y %= SIZE[1]
 
 
 ##
@@ -226,31 +238,33 @@ class Enemy(Airflame):
         super(Airflame, self).add(enemyGroup)
         rx = random.randrange(-3, 3)
         ry = random.randrange(-3, 3)
-        self.__v = [rx, ry]
+        self._v = [rx, ry]
 
     ##
     # @brief 敵機状態の更新メソッド
     #
     # 現在の状態に基づいて次の行動を決定し，移動および弾丸の発射を行う.
     def update(self):
-        self.__nextAction()
-        self.__move()
-        self.__shot()
+        self._nextAction()
+        self._move()
+        self._shot()
 
     ##
     # @brief 現在の状態に基づいて次の行動を決定するメソッド
     #
     # 現在の状態に基づいて移動速度(移動方向)と弾丸を発射するかを決定する.
-    def __nextAction(self):
+    def _nextAction(self):
         isOutOfRange = checkOutOfRange(self.rect)
         if isOutOfRange[0]:
-            self.__v[0] *= -1
+            self._v[0] *= -1
         if isOutOfRange[1]:
-            self.__v[1] *= -1
+            self._v[1] *= -1
 
         r = random.random()
         if r < self.prop.shotFreq:
-            self.__isShot = True
+            self._isShot = True
+        else:
+            self._isShot = False
 
     ##
     # @brief 衝突したオブジェクト(Playerオブジェクト)に対してダメージを与えるメソッド
@@ -259,7 +273,7 @@ class Enemy(Airflame):
     #
     # 衝突したオブジェクトに対して直接ぶつかってダメージを与える.なお,衝突した後は敵機自身は消滅する.
     def damage(self, player):
-        player.collided(self.__hp)
+        player.collided(self._hp)
         self.kill()
 
 
@@ -269,35 +283,35 @@ class Enemy(Airflame):
 # キー入力を元に,自機への命令を決定する.
 class Command(object):
     ## 移動量
-    __D = 2
+    _D = 2
     ## キーと移動方向を対応付ける辞書
-    __commandList = {
-        pygame.K_UP: (0, -__D),
-        pygame.K_RIGHT: (__D, 0),
-        pygame.K_DOWN: (0, __D),
-        pygame.K_LEFT: (-__D, 0),
+    _commandList = {
+        pygame.K_UP: (0, -_D),
+        pygame.K_RIGHT: (_D, 0),
+        pygame.K_DOWN: (0, _D),
+        pygame.K_LEFT: (-_D, 0),
     }
     ## 弾丸を発射するキー
-    __SHOT_KEY = pygame.K_SPACE
+    _SHOT_KEY = pygame.K_SPACE
     ## 速度と弾丸を発射可能かを保持する命令オブジェクト
-    __command = collections.namedtuple('command', 'v isShot')
+    _command = collections.namedtuple('command', 'v isShot')
 
     ##
     # @brief キー入力を元に自機への命令を出力するメソッド
     #
-    # @return 命令をまとめたオブジェクト(__commandオブジェクト)
+    # @return 命令をまとめたオブジェクト(_commandオブジェクト)
     def getCommand(self):
         vx = 0
         vy = 0
         isShot = False
         pressed_keys = pygame.key.get_pressed()
-        for key in Command.__commandList.keys():
+        for key in Command._commandList.keys():
             if pressed_keys[key]:
-                mvCommand = Command.__commandList[key]
+                mvCommand = Command._commandList[key]
                 vx += mvCommand[0]
                 vy += mvCommand[1]
-        if pressed_keys[Command.__SHOT_KEY]:
+        if pressed_keys[Command._SHOT_KEY]:
             isShot = True
 
-        com = Command.__command((vx, vy), isShot)
+        com = Command._command((vx, vy), isShot)
         return com
