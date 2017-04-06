@@ -1,0 +1,5 @@
+<map id="stg.Player.update" name="stg.Player.update">
+<area shape="rect" id="node2" href="$classstg_1_1Player.html#aaed7ada93005b5dd9827b79fe3e97ad5" title="commandの内容に基づいて次の行動を決定するメソッド " alt="" coords="177,5,332,32"/>
+<area shape="rect" id="node3" href="$classstg_1_1MySprite.html#a55798fb098a017913ff49845dc9f720c" title="画面内を移動するメソッド " alt="" coords="185,56,324,83"/>
+<area shape="rect" id="node4" href="$classstg_1_1Airflame.html#a311731baf398c56e256007e77e794d8d" title="弾丸を発射するメソッド " alt="" coords="191,107,319,133"/>
+</map>

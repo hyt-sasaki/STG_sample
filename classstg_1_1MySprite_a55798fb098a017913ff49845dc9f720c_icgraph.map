@@ -1,0 +1,6 @@
+<map id="stg.MySprite._move" name="stg.MySprite._move">
+<area shape="rect" id="node2" href="$classstg_1_1Bullet.html#ad5193c976890eaddb7439d789ad94c47" title="状態の更新メソッド " alt="" coords="196,5,316,32"/>
+<area shape="rect" id="node4" href="$classstg_1_1Player.html#a552bd90e239b3ab2112435d285d5b8b1" title="自機状態の更新メソッド " alt="" coords="194,56,318,83"/>
+<area shape="rect" id="node5" href="$classstg_1_1Enemy.html#affee45d497f61485c82d78bb23ae217c" title="敵機状態の更新メソッド " alt="" coords="192,107,320,133"/>
+<area shape="rect" id="node3" href="$classstg_1_1STG.html#ab5e099795335d7dadcd5b01e249fe620" title="stg.STG.run" alt="" coords="368,56,461,83"/>
+</map>

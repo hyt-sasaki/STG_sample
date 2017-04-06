@@ -1,0 +1,6 @@
+<map id="stg.checkOutOfRange" name="stg.checkOutOfRange">
+<area shape="rect" id="node2" href="$classstg_1_1Bullet.html#ad5193c976890eaddb7439d789ad94c47" title="状態の更新メソッド " alt="" coords="416,5,536,32"/>
+<area shape="rect" id="node4" href="$classstg_1_1Enemy.html#a6ce8b2fcf542024841bcbde14578e848" title="現在の状態に基づいて次の行動を決定するメソッド " alt="" coords="205,56,364,83"/>
+<area shape="rect" id="node3" href="$classstg_1_1STG.html#ab5e099795335d7dadcd5b01e249fe620" title="stg.STG.run" alt="" coords="588,31,681,57"/>
+<area shape="rect" id="node5" href="$classstg_1_1Enemy.html#affee45d497f61485c82d78bb23ae217c" title="敵機状態の更新メソッド " alt="" coords="412,56,540,83"/>
+</map>

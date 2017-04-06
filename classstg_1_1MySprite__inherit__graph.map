@@ -1,0 +1,6 @@
+<map id="stg.MySprite" name="stg.MySprite">
+<area shape="rect" id="node3" href="$classstg_1_1Airflame.html" title="機体を表すクラス " alt="" coords="74,315,174,480"/>
+<area shape="rect" id="node6" href="$classstg_1_1Bullet.html" title="弾丸クラス " alt="" coords="199,337,287,458"/>
+<area shape="rect" id="node4" href="$classstg_1_1Enemy.html" title="Enemyクラス " alt="" coords="5,528,112,664"/>
+<area shape="rect" id="node5" href="$classstg_1_1Player.html" title="Playerクラス " alt="" coords="136,528,243,664"/>
+</map>

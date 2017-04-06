@@ -1,0 +1,5 @@
+<map id="stg.Airflame" name="stg.Airflame">
+<area shape="rect" id="node4" href="$classstg_1_1Enemy.html" title="Enemyクラス " alt="" coords="5,528,112,664"/>
+<area shape="rect" id="node5" href="$classstg_1_1Player.html" title="Playerクラス " alt="" coords="136,528,243,664"/>
+<area shape="rect" id="node2" href="$classstg_1_1MySprite.html" title="自作のSpriteクラス " alt="" coords="75,131,173,267"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="クラス階層図" name="クラス階層図">
+<area shape="rect" id="node2" href="$classstg_1_1MySprite.html" title="自作のSpriteクラス " alt="" coords="109,56,205,83"/>
+<area shape="rect" id="node3" href="$classstg_1_1Airflame.html" title="機体を表すクラス " alt="" coords="253,31,345,57"/>
+<area shape="rect" id="node6" href="$classstg_1_1Bullet.html" title="弾丸クラス " alt="" coords="261,81,338,108"/>
+<area shape="rect" id="node4" href="$classstg_1_1Enemy.html" title="Enemyクラス " alt="" coords="393,5,479,32"/>
+<area shape="rect" id="node5" href="$classstg_1_1Player.html" title="Playerクラス " alt="" coords="395,56,477,83"/>
+</map>

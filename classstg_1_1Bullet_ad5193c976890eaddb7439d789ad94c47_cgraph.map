@@ -1,0 +1,4 @@
+<map id="stg.Bullet.update" name="stg.Bullet.update">
+<area shape="rect" id="node2" href="$classstg_1_1MySprite.html#a55798fb098a017913ff49845dc9f720c" title="画面内を移動するメソッド " alt="" coords="180,5,319,32"/>
+<area shape="rect" id="node3" href="$namespacestg.html#aad913f65ff0caf03a3187cadc0495706" title="Rectが画面外に出ていないかを判定する関数 " alt="" coords="173,56,325,83"/>
+</map>
