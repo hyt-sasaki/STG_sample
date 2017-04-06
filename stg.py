@@ -315,3 +315,182 @@ class Command(object):
 
         com = Command._command((vx, vy), isShot)
         return com
+
+
+class STG(object):
+    SIZE = (400, 300)
+    bprop = collections.namedtuple('BProp', 'v d image')
+
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode(SIZE)
+
+        self.score = 0
+
+        # spriteGroupの設定
+        self.draw_list = pygame.sprite.RenderUpdates()
+        self.e_bullet_list = pygame.sprite.Group()
+        self.p_bullet_list = pygame.sprite.Group()
+        self.enemy_list = pygame.sprite.Group()
+
+        # Playerの生成
+        playerProp = self.makePProp()
+        self.genPlayer(playerProp)
+
+        # Enemyの生成
+        enemyProp = self.makeEProp()
+        self.gen = self.genEnemies(enemyProp, 30)
+        for i in range(10):
+            try:
+                self.gen.next()
+            except StopIteration:
+                pass
+
+        # Commandの生成
+        self.command = Command()
+
+        # ループ判定
+        self.done = False
+
+        self.clock = pygame.time.Clock()
+
+        self.run()
+
+        pygame.quit()
+
+    def run(self):
+        # メインループ
+        while not self.done:
+            self.event_handle()
+
+            com = self.command.getCommand()
+
+            self.update(com)
+            self.colllide_detection()
+
+            self.draw()
+
+            self.clock.tick(60)
+
+            self.clear()
+
+    def clear(self):
+        if not self.player.alive():
+            self.done = True
+        elif len(self.enemy_list) == 0:
+            self.done = True
+
+    def update(self, command):
+        self.player.update(command)
+        if len(self.enemy_list) < 10:
+            try:
+                self.gen.next()
+            except StopIteration:
+                pass
+        self.enemy_list.update()
+        self.p_bullet_list.update()
+        self.e_bullet_list.update()
+
+    def draw(self):
+        self.screen.fill((0, 0, 0))
+        self.draw_list.draw(self.screen)
+        pygame.display.flip()
+
+    def event_handle(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.done = True
+
+    def colllide_detection(self):
+        enemy_bullet_collided = pygame.sprite.groupcollide(
+            self.p_bullet_list, self.enemy_list, True, False
+        )
+        player_bullet_collided = pygame.sprite.spritecollide(
+            self.player, self.e_bullet_list, True
+        )
+        player_enemy_collided = pygame.sprite.spritecollide(
+            self.player, self.enemy_list, False
+        )
+        for bullet in enemy_bullet_collided:
+            for enemy in enemy_bullet_collided[bullet]:
+                bullet.damage(enemy)
+
+        for bullet in player_bullet_collided:
+            bullet.damage(self.player)
+
+        for enemy in player_enemy_collided:
+            enemy.damage(self.player)
+
+    def makePProp(self):
+        # Playerのプロパティを設定
+        pprop = collections.namedtuple(
+            'PProp', 'image bprop hp reloadLimit'
+        )
+        playerImage = pygame.Surface((15, 10))
+        playerImage.fill((0, 0, 255))
+        playerHP = 3
+        playerReload = 30
+
+        # PlayerのBulletのプロパティを設定
+        pbulletImage = pygame.Surface((3, 15))
+        pbulletImage.fill((255, 0, 0))
+        pbulletVel = (0, -2)
+        pbulletDamage = 1
+
+        # PlayerのBulletのプロパティを生成
+        playerBulletProp = STG.bprop(pbulletVel, pbulletDamage, pbulletImage)
+
+        # Playerのプロパティを生成
+        playerProp = pprop(
+            playerImage, playerBulletProp, playerHP, playerReload
+        )
+
+        return playerProp
+
+    def genPlayer(self, pprop):
+        # Playerを生成
+        player_pos = (SIZE[0] / 2, SIZE[1])
+        self.player = Player(
+            player_pos, pprop, self.draw_list, self.p_bullet_list
+        )
+
+    def makeEProp(self):
+        # Enemyのプロパティを設定
+        eprop = collections.namedtuple(
+            'EProp', 'image bprop hp reloadLimit shotFreq'
+        )
+        enemyImage = pygame.Surface([15, 10])
+        enemyImage.fill((255, 0, 255))
+        enemyHP = 2
+        enemyReload = 300
+        enemyShotFreq = 0.6
+
+        # Enemy用のBulletのプロパティを設定
+        ebulletImage = pygame.Surface((3, 15))
+        ebulletImage.fill((255, 255, 255))
+        ebulletVel = (0, 2)
+        ebulletDamage = 1
+
+        # Enemy用のプロパティを生成
+        enemyBulletProp = STG.bprop(ebulletVel, ebulletDamage, ebulletImage)
+
+        # Enemyのプロパティを生成
+        enemyProp = eprop(
+            enemyImage, enemyBulletProp, enemyHP, enemyReload, enemyShotFreq
+        )
+
+        return enemyProp
+
+    def genEnemies(self, enemyProp, num):
+        # Enemyを生成
+        for i in range(num):
+            rx = random.randrange(0, SIZE[0])
+            ry = random.randrange(0, SIZE[1] / 2)
+            enemy = Enemy(
+                (rx, ry), enemyProp, self.draw_list,
+                self.e_bullet_list, self.enemy_list
+            )
+            yield enemy
+
+if __name__ == '__main__':
+    STG()
